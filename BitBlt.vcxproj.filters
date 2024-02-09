@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{798ed290-b4e3-49ea-b713-6238aa69a1e0}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{90466a14-514a-4cc3-93de-1a762f72cf49}</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{40a8c460-8ed8-425e-8e44-0f3b9ef18439}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Create">
+      <UniqueIdentifier>{52f0df08-2769-498f-aab9-1820e259323c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Create">
+      <UniqueIdentifier>{e1994618-5749-4020-a269-c018b859e33b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="BitBlt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicEngine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CCharacter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CGoomba.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CCoin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CreateCoin.cpp">
+      <Filter>Source Files\Create</Filter>
+    </ClCompile>
+    <ClCompile Include="CreateEnemy.cpp">
+      <Filter>Source Files\Create</Filter>
+    </ClCompile>
+    <ClCompile Include="CreateAnimation.cpp">
+      <Filter>Source Files\Create</Filter>
+    </ClCompile>
+    <ClCompile Include="SaveRecord.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GraphicEngine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CCharacter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CPlayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Define.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CGoomba.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CCoin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CreateCoin.h">
+      <Filter>Header Files\Create</Filter>
+    </ClInclude>
+    <ClInclude Include="CreateEnemy.h">
+      <Filter>Header Files\Create</Filter>
+    </ClInclude>
+    <ClInclude Include="CreateAnimation.h">
+      <Filter>Header Files\Create</Filter>
+    </ClInclude>
+    <ClInclude Include="SaveRecord.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
