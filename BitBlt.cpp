@@ -13,9 +13,6 @@
 
 #include "SaveRecord.h"
 
-/*
-* ´ÙÀ½ ÇÒ °Í: ÀÛ¾ÆÁ®¼­ ±âÈ¸ ÇÑ ¹ø ´õ ¾ò±â, º®µ¹ ºÎ¼ö±â, Á¡¼ö ±â·Ï...
-*/
 using namespace std;
 
 LRESULT CALLBACK WndProc(HWND,UINT,WPARAM,LPARAM);
@@ -32,15 +29,15 @@ HINSTANCE g_hInst;
 HWND hWndMain;
 LPSTR lpszClass="MARIO";
 
-SURFACEINFO g_sfBack;			// ¹öÆÛ Ç¥¸é
-SURFACEINFO g_sfBG;				// ¹è°æ Ç¥¸é 
-SURFACEINFO g_sfBG_Ground;		// ¹è°æ ¶¥ Ç¥¸é 
-SURFACEINFO g_sfBG_Object;		// ¹è°æ ¿ÀºêÁ§Æ® Ç¥¸é 
+SURFACEINFO g_sfBack;			// ë²„í¼ í‘œë©´
+SURFACEINFO g_sfBG;				// ë°°ê²½ í‘œë©´ 
+SURFACEINFO g_sfBG_Ground;		// ë°°ê²½ ë•… í‘œë©´ 
+SURFACEINFO g_sfBG_Object;		// ë°°ê²½ ì˜¤ë¸Œì íŠ¸ í‘œë©´ 
 
-SURFACEINFO g_sfCaracter;		// Ä³¸¯ÅÍ Ç¥¸é
-SURFACEINFO g_sfMonster;		// ¸ó½ºÅÍ Ç¥¸é
-SURFACEINFO g_sCoin;			// ÄÚÀÎ Ç¥¸é
-SURFACEINFO g_sWrite;			// ±Û¾¾ Ç¥¸é
+SURFACEINFO g_sfCaracter;		// ìºë¦­í„° í‘œë©´
+SURFACEINFO g_sfMonster;		// ëª¬ìŠ¤í„° í‘œë©´
+SURFACEINFO g_sCoin;			// ì½”ì¸ í‘œë©´
+SURFACEINFO g_sWrite;			// ê¸€ì”¨ í‘œë©´
 
 CCoin* Coin[OBJECT_COIN_MAX];
 CCharacter* Mario = new CPlayer;
@@ -112,23 +109,23 @@ int APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpszCmdPa
 float speed = 1.0f;
 float GoombaSpeed = 1.0f;
 
-// fps =		1ÃÊ µ¿¾È Ç¥½ÃµÇ´Â ÇÁ·¹ÀÓ ¼ö
-// deltaTime =	ÀÌÀü ÇÁ·¹ÀÓ°ú ÇöÀç ÇÁ·¹ÀÓÀÇ ½Ã°£ Â÷ÀÌ
+// fps =		1ì´ˆ ë™ì•ˆ í‘œì‹œë˜ëŠ” í”„ë ˆì„ ìˆ˜
+// deltaTime =	ì´ì „ í”„ë ˆì„ê³¼ í˜„ì¬ í”„ë ˆì„ì˜ ì‹œê°„ ì°¨ì´
 float fps = 0;
 float timeDelta;
 void FPS()
 {
-	static DWORD frameCount = 0;					//ÇÁ·¹ÀÓ Ä«¿îÆ®¼ö
-	static float timeElapsed = 0.0f;				//Èå¸¥ ½Ã°£
-	static DWORD lastTime = timeGetTime();			//¸¶Áö¸· ½Ã°£(tempº¯¼ö)
+	static DWORD frameCount = 0;					//í”„ë ˆì„ ì¹´ìš´íŠ¸ìˆ˜
+	static float timeElapsed = 0.0f;				//íë¥¸ ì‹œê°„
+	static DWORD lastTime = timeGetTime();			//ë§ˆì§€ë§‰ ì‹œê°„(tempë³€ìˆ˜)
 													
-	DWORD curTime = timeGetTime();					//ÇöÀç ½Ã°£
-	timeDelta = (curTime - lastTime) * 0.001f;		//timeDelta(1¹ø»ı¼ºÈÄ Èå¸¥ ½Ã°£) 1ÃÊ´ÜÀ§·Î ¹Ù²ãÁØ´Ù.
+	DWORD curTime = timeGetTime();					//í˜„ì¬ ì‹œê°„
+	timeDelta = (curTime - lastTime) * 0.001f;		//timeDelta(1ë²ˆìƒì„±í›„ íë¥¸ ì‹œê°„) 1ì´ˆë‹¨ìœ„ë¡œ ë°”ê¿”ì¤€ë‹¤.
 
 	timeElapsed += timeDelta;
 	frameCount++;
 
-	if (timeElapsed >= 1.0f)         //Èå¸¥½Ã°£ÀÌ 1ÃÊÀÌ»óÀÌ¸é ³»°¡ ÇÏ°í½ÍÀº°Í Ã³¸®
+	if (timeElapsed >= 1.0f)         //íë¥¸ì‹œê°„ì´ 1ì´ˆì´ìƒì´ë©´ ë‚´ê°€ í•˜ê³ ì‹¶ì€ê²ƒ ì²˜ë¦¬
 	{
 		fps = (float)frameCount / timeElapsed;
 
@@ -137,27 +134,24 @@ void FPS()
 		if (Mario->GetCaracterFast() == TRUE)
 		{
 			speed = fps * FAST_SPEED * timeDelta;
-			//speed = FAST_SPEED * timeDelta;
 		}
 		else
 		{
 			speed = fps * SLOW_SPEED * timeDelta;
-			//speed = SLOW_SPEED * timeDelta;
 		}
-		//GoombaSpeed = fps * SLOW_SPEED * timeDelta;
 		GoombaSpeed = SLOW_SPEED * timeDelta;
 	}
 	else
 	{
-		Sleep(0.002f * 1000);   // °­ÀÇ½Ç¿¡¼± 65fps...
-		//Èå¸¥ ½Ã°£ÀÌ 1ÃÊ°¡ ¾ÈµÇ¸é »ı·«ÇÔ  
-		//Sleep() ÇØµµµÇ°í ¾ÈÇØµµ µÇ±¸~ 
+		Sleep(0.002f * 1000);   // ê°•ì˜ì‹¤ì—ì„  65fps...
+		//íë¥¸ ì‹œê°„ì´ 1ì´ˆê°€ ì•ˆë˜ë©´ ìƒëµí•¨  
+		//Sleep() í•´ë„ë˜ê³  ì•ˆí•´ë„ ë˜êµ¬~ 
 	}
 
 	lastTime = curTime;
 }
 
-//// ÀÏ°ı Ç¥¸é ÆÄ±«
+//// ì¼ê´„ í‘œë©´ íŒŒê´´
 void __DestroyAll()
 {
 	__ReleaseSurface(&g_sfCaracter);
@@ -169,7 +163,7 @@ void __DestroyAll()
 	__ReleaseSurface(&g_sWrite);
 }
 
-//// ÀÏ°ı Ç¥¸é »ı¼º 
+//// ì¼ê´„ í‘œë©´ ìƒì„± 
 void __Init(HDC dcScreen)
 {
 	__CreateBackBuffer(dcScreen, SCREEN_X, SCREEN_Y, &g_sfBack);
@@ -242,10 +236,6 @@ LRESULT CALLBACK WndProc(HWND hWnd,UINT iMessage,WPARAM wParam,LPARAM lParam)
 		{
 			SetTimer(hWnd, ID_TM_MAINLOOP, 16, NULL);
 			SetTimer(hWnd, ID_TM_MOVE, 15, NULL);
-			//SetTimer(hWnd, ID_TM_MAINLOOP, 30, NULL);
-			//SetTimer(hWnd, ID_TM_MOVE, 30, NULL);
-			//SetTimer(hWnd, ID_TM_MAINLOOP, 100, NULL);
-			//SetTimer(hWnd, ID_TM_MOVE, 100, NULL);
 		
 			SetTimer(hWnd, ID_TM_JUMPTIME, 100, NULL);
 			SetTimer(hWnd, ID_TM_GAMETIME, 1000, NULL);
@@ -263,7 +253,7 @@ LRESULT CALLBACK WndProc(HWND hWnd,UINT iMessage,WPARAM wParam,LPARAM lParam)
 		{
 			if (290 <= cx && cx <= 350 && 250 <= cy && cy <= 290)
 			{
-				OutputDebugString("»öÀÌ ´Ş¶ó¿ä!\n");
+				OutputDebugString("ìƒ‰ì´ ë‹¬ë¼ìš”!\n");
 				SaveRecord(nScore, nScoreList, string, chName);
 				Score_UI = TRUE;
 			}
@@ -307,16 +297,15 @@ LRESULT CALLBACK WndProc(HWND hWnd,UINT iMessage,WPARAM wParam,LPARAM lParam)
 					if (nTime == 0)
 					{
 						Next_UI = TRUE;
-						//SaveRecord();	// ¿£µù ÈÄ Á¡¼ö ÀúÀå
 					}
 				}
 			}
 		}
 		else if (!GAME_CLEAR && !TimeOver && !Player_Die)
 		{
-			//TimeCount(wParam, &nTime, &TimeOver);
+			TimeCount(wParam, &nTime, &TimeOver);
 			Mario->__CharacterMove(wParam, KeyBuffer, nBgX, nMapCount, speed);
-			//GroupEnemyMove(wParam);
+			GroupEnemyMove(wParam);
 			GroupCoinRotaion(wParam);
 			FlagPosAndMove(wParam, &flagMove);
 			__MapMove(wParam, Mario, &nTotalBgX, &nBgX, &nBgGroundX, &nMapCount, KeyBuffer);
@@ -354,20 +343,21 @@ LRESULT CALLBACK WndProc(HWND hWnd,UINT iMessage,WPARAM wParam,LPARAM lParam)
 	return(DefWindowProc(hWnd, iMessage, wParam, lParam));
 }
 
-// ¸ó½ºÅÍ¸¦ »ı¼ºÇÏ°í Ãæµ¹À» Ã¼Å©ÇÏ¿© »ç¸Á¿©ºÎ¸¦ µûÁø´Ù.
-void CreateEnemy(CCharacter*& Monster, int nMonsterType, int nMonsterspawnX, int nMonsterspawnY, int nMonster_XSize, int nMonster_YSize, BOOL *MonsterLifeCode)
+// ëª¬ìŠ¤í„°ë¥¼ ìƒì„±í•˜ê³  ì¶©ëŒì„ ì²´í¬í•˜ì—¬ ì‚¬ë§ì—¬ë¶€ë¥¼ ë”°ì§„ë‹¤.
+void CreateEnemy(CCharacter*& Monster, int nMonsterType, int nMonsterspawnX, int nMonsterspawnY,
+				int nMonster_XSize, int nMonster_YSize, BOOL *MonsterLifeCode)
 {
 	int nTotal = nMonsterspawnX + nTotalBgX;
 	if (Monster == NULL && *MonsterLifeCode == FALSE && nTotal < SCREEN_X)
 	{
-		CreateEnemyPoint(Monster, nMonsterType, nMonsterspawnX, nMonsterspawnY);	// Àû »ı¼º ¹× »ı¼º À§Ä¡ ¼±Á¤
+		// SCREEN_Xê³¼ ëª¬ìŠ¤í„°ì˜ ìœ„ì¹˜ë¥¼ ë¹„êµí•˜ë©° ìƒì„± ì‹œì ì„ ì¡°ì ˆí•œë‹¤
+		CreateEnemyPoint(Monster, nMonsterType, nMonsterspawnX, nMonsterspawnY);	// ì  ìƒì„± ë° ìƒì„± ìœ„ì¹˜ ì„ ì •
 		*MonsterLifeCode = TRUE;
-		//OutputDebugString("»ı¼º!\n");
 	}
 
-	if (Monster != NULL)
+	if (Monster != NULL)	// ëª¬ìŠ¤í„°ê°€ ìƒì„±ë˜ì—ˆì„ ê²½ìš°
 	{
-		// Àû
+		// ì 
 		__PutSprite(g_sfBack.dcSurface, Monster->GetCharacterMoveX() + nTotalBgX, Monster->GetCharacterMoveY(),
 			24, 24, Monster->GetStandX(), Monster->GetStandY(), &g_sfMonster);
 
@@ -442,7 +432,7 @@ void ___aMainLoop(HWND hWnd)
 	else
 	{
 		GameOver(Mario, &nTotalBgX, &GAME_CLEAR, &nCharacterLife, &Player_Die);
-		// ¹è°æ
+		// ë°°ê²½
 		{
 			__PutImage(g_sfBack.dcSurface, nBgGroundX, 0, g_sfBG.nWidth, g_sfBG.nHeight, 0, 0, &g_sfBG);
 
@@ -459,18 +449,18 @@ void ___aMainLoop(HWND hWnd)
 		}
 		CoinSet();
 
-		// Ä³¸¯ÅÍ
+		// ìºë¦­í„°
 		__PutSprite(g_sfBack.dcSurface, Mario->GetCharacterMoveX(), Mario->GetCharacterMoveY(),
 			PLAYER_X_LEN, PLAYER_Y_LEN, Mario->GetStandX(), Mario->GetStandY(), &g_sfCaracter);
-		// Àû
+		// ì 
 		{
-			//CreateEnemy(Goomba[0], MONSTER_GOOMBA, 304, MONSTER_GOOMBA_Y, MONSTER_GOOMBA_X_LEN, MONSTER_GOOMBA_Y_LEN, &MonsterLifeCode[0]);
-			//CreateEnemy(Goomba[1], MONSTER_GOOMBA, 448, 176 - MONSTER_GOOMBA_Y_LEN + 2, MONSTER_GOOMBA_X_LEN, MONSTER_GOOMBA_Y_LEN, &MonsterLifeCode[1]);
-			//CreateEnemy(Goomba[2], MONSTER_GOOMBA, 656, MONSTER_GOOMBA_Y, MONSTER_GOOMBA_X_LEN, MONSTER_GOOMBA_Y_LEN, &MonsterLifeCode[2]);
-			//CreateEnemy(Goomba[3], MONSTER_GOOMBA, 816, 240 - MONSTER_GOOMBA_Y_LEN + 2, MONSTER_GOOMBA_X_LEN, MONSTER_GOOMBA_Y_LEN, &MonsterLifeCode[3]);
-			//CreateEnemy(Goomba[4], MONSTER_GOOMBA, 896, 192 - MONSTER_GOOMBA_Y_LEN + 2, MONSTER_GOOMBA_X_LEN, MONSTER_GOOMBA_Y_LEN, &MonsterLifeCode[4]);
-			//CreateEnemy(Goomba[5], MONSTER_GOOMBA, 1152, 224 - MONSTER_GOOMBA_Y_LEN + 2, MONSTER_GOOMBA_X_LEN, MONSTER_GOOMBA_Y_LEN, &MonsterLifeCode[5]);
-			//CreateEnemy(Goomba[6], MONSTER_GOOMBA, 1328, 144 - MONSTER_GOOMBA_Y_LEN + 2, MONSTER_GOOMBA_X_LEN, MONSTER_GOOMBA_Y_LEN, &MonsterLifeCode[6]);
+			CreateEnemy(Goomba[0], MONSTER_GOOMBA, 304, MONSTER_GOOMBA_Y, MONSTER_GOOMBA_X_LEN, MONSTER_GOOMBA_Y_LEN, &MonsterLifeCode[0]);
+			CreateEnemy(Goomba[1], MONSTER_GOOMBA, 448, 176 - MONSTER_GOOMBA_Y_LEN + 2, MONSTER_GOOMBA_X_LEN, MONSTER_GOOMBA_Y_LEN, &MonsterLifeCode[1]);
+			CreateEnemy(Goomba[2], MONSTER_GOOMBA, 656, MONSTER_GOOMBA_Y, MONSTER_GOOMBA_X_LEN, MONSTER_GOOMBA_Y_LEN, &MonsterLifeCode[2]);
+			CreateEnemy(Goomba[3], MONSTER_GOOMBA, 816, 240 - MONSTER_GOOMBA_Y_LEN + 2, MONSTER_GOOMBA_X_LEN, MONSTER_GOOMBA_Y_LEN, &MonsterLifeCode[3]);
+			CreateEnemy(Goomba[4], MONSTER_GOOMBA, 896, 192 - MONSTER_GOOMBA_Y_LEN + 2, MONSTER_GOOMBA_X_LEN, MONSTER_GOOMBA_Y_LEN, &MonsterLifeCode[4]);
+			CreateEnemy(Goomba[5], MONSTER_GOOMBA, 1152, 224 - MONSTER_GOOMBA_Y_LEN + 2, MONSTER_GOOMBA_X_LEN, MONSTER_GOOMBA_Y_LEN, &MonsterLifeCode[5]);
+			CreateEnemy(Goomba[6], MONSTER_GOOMBA, 1328, 144 - MONSTER_GOOMBA_Y_LEN + 2, MONSTER_GOOMBA_X_LEN, MONSTER_GOOMBA_Y_LEN, &MonsterLifeCode[6]);
 		}
 
 		{
@@ -488,11 +478,6 @@ void ___aMainLoop(HWND hWnd)
 			}
 
 			char  strBuff[24], strBuff2[24], strBuff3[24], strBuff4[24], strBuff5[24], strBuff6[24], strBuff7[40], strBuff8[40], strBuff9[24], strBuff10[20], strBuff11[20], strBuff12[20], strBuff13[20];
-
-			//sprintf(strBuff7, "X: %f, Y: %f", (float)Mario->GetCharacterMoveX(), (float)Mario->GetCharacterMoveY());
-			//TextOut(g_sfBack.dcSurface, Mario->GetCharacterMoveX() - 40, Mario->GetCharacterMoveY(), strBuff7, strlen(strBuff7));
-			//sprintf(strBuff8, "X: %f, Y: %f", (float)Mario->GetCharacterMoveX() + (float)PLAYER_X_LEN, (float)Mario->GetCharacterMoveY() + (float)PLAYER_Y_LEN);
-			//TextOut(g_sfBack.dcSurface, Mario->GetCharacterMoveX() + PLAYER_X_LEN - 40, Mario->GetCharacterMoveY() + PLAYER_Y_LEN, strBuff8, strlen(strBuff8));
 
 			wsprintf(strBuff, "STAGE: %d", nMapCount);
 			wsprintf(strBuff2, "nBgX: %d", nBgX);
@@ -533,13 +518,8 @@ void ___aMainLoop(HWND hWnd)
 int TileMoveCount = 0;
 void __GroundPaint()
 {
-	//char numString[10] = { 0 };
-	//itoa(tile[i], numString, 10);
-	//OutputDebugString(numString);
-	//OutputDebugString("\n");
-
 	if (nBgX == 0)
-	{	// Å¸ÀÏ À§Ä¡ ÃÊ±âÈ­
+	{	// íƒ€ì¼ ìœ„ì¹˜ ì´ˆê¸°í™”
 		TileMoveCount = 0;
 		for (int i = 0; i < TILE_MAX; i++)
 			tile[i] = -16 + (16 * i);
@@ -548,29 +528,29 @@ void __GroundPaint()
 	for (int i = 0; i < TILE_MAX; i++)
 	{
 		if (tile[i] + nBgX < -16 && (KeyBuffer[MOVE_RIGHT] || KeyBuffer[MOVE_RIGHT_D]))
-		{	// ¿À¸¥ÂÊÀ¸·Î ÇâÇÔ
-			TileMoveCount = 1 + i;	// ¸î °³¸¦ ¿À¸¥ÂÊÀ¸·Î ¿Å±æ °ÍÀÎ°¡.
+		{	// ì˜¤ë¥¸ìª½ìœ¼ë¡œ í–¥í•¨
+			TileMoveCount = 1 + i;	// ëª‡ ê°œë¥¼ ì˜¤ë¥¸ìª½ìœ¼ë¡œ ì˜®ê¸¸ ê²ƒì¸ê°€.
 			for (int i = 0; i < TileMoveCount; i++)
 				tile[i] = SCREEN_X + (16 * i);
 		}
 		else if (tile[TILE_MAX - 1 - i] + nBgX > SCREEN_X && (KeyBuffer[MOVE_LEFT] || KeyBuffer[MOVE_LEFT_A]))
-		{	// ¿ŞÂÊ ÀÌµ¿
+		{	// ì™¼ìª½ ì´ë™
 			TileMoveCount = 1 + i;
 			for (int i = 0; i < TileMoveCount; i++)
 				tile[TILE_MAX - 1 - i] = (-32) - (16 * i);
 		}
 
 		if (nBgX < 0 && Mario->GetCharacterMoveX() <= LEFT_LIMIT)
-		{	// ¿À¸¥ÂÊÀ¸·Î °¡´ø Áß ¿ŞÂÊÀ¸·Î ¹æÇâÀ» Æ´.
+		{	// ì˜¤ë¥¸ìª½ìœ¼ë¡œ ê°€ë˜ ì¤‘ ì™¼ìª½ìœ¼ë¡œ ë°©í–¥ì„ í‹ˆ.
 			if (tile[TileMoveCount - 1] + nBgX > SCREEN_X)
-			{	// ¾ÆÁ÷ ¿Å°ÜÁöÁö ¾ÊÀº, ¹Ù·Î ¾Õ ¹è¿­ÀÇ µÚ·Î ÀÌµ¿
+			{	// ì•„ì§ ì˜®ê²¨ì§€ì§€ ì•Šì€, ë°”ë¡œ ì• ë°°ì—´ì˜ ë’¤ë¡œ ì´ë™
 				tile[TileMoveCount - 1] = tile[TileMoveCount] - 16;
 			}
 			if (tile[i] >= SCREEN_X)
 				TileMoveCount = i + 1;
 		}
 		else if (0 < nBgX && RIGHT_LIMIT <= Mario->GetCharacterMoveX())
-		{	// ¿ŞÂÊÀ¸·Î °¡´ø Áß ¿À¸¥ÂÊÀ¸·Î ÀÌµ¿
+		{	// ì™¼ìª½ìœ¼ë¡œ ê°€ë˜ ì¤‘ ì˜¤ë¥¸ìª½ìœ¼ë¡œ ì´ë™
 			if (tile[TILE_MAX - TileMoveCount] + nBgX < -16)
 			{
 				tile[TILE_MAX - TileMoveCount] = tile[TILE_MAX - TileMoveCount - 1] + 16;
@@ -580,13 +560,14 @@ void __GroundPaint()
 		}
 	}
 
+	// íƒ€ì¼ ì´ë¯¸ì§€
 	for (int i = 0; i < TILE_MAX; i++)
 	{
 		__PutImage(g_sfBack.dcSurface, tile[i] + nBgX, TILE_Y, TILE_X_LEN, TILE_Y_LEN, 18, 1, &g_sfBG_Ground);
 		for (int Tile_Y_MAX = 1; Tile_Y_MAX <= 9; Tile_Y_MAX++)
 			__PutImage(g_sfBack.dcSurface, tile[i] + nBgX, TILE_Y + (TILE_Y_LEN * Tile_Y_MAX), TILE_X_LEN, TILE_Y_LEN, 18, 18, &g_sfBG_Ground);
 	}
-	//// ÁöµµÀÇ Ã³À½°ú ³¡ ºÎºĞ
+	//// ì§€ë„ì˜ ì²˜ìŒê³¼ ë ë¶€ë¶„
 	if (nMapCount == 1 && nBgX == 0)
 	{
 		__PutImage(g_sfBack.dcSurface, 0 + nBgX, TILE_Y, TILE_X_LEN, TILE_Y_LEN, 1, 1, &g_sfBG_Ground);
@@ -603,7 +584,7 @@ void __GroundPaint()
 
 void GroupMapPaint(int nX1, int nY, int nBlockCount)
 {
-	// Çã°ø ±×¶ó¿îµå
+	// í—ˆê³µ ê·¸ë¼ìš´ë“œ
 	int x2;
 	for (int i = 0; i < nBlockCount; i++)
 	{	// X: 304 ~ 352
@@ -632,14 +613,14 @@ void __MapPaint()
 }
 void BackGroundPaint()
 {
-	// ¼º À§ & ¾Æ·¡
+	// ì„± ìœ„ & ì•„ë˜
 	__PutSprite(g_sfBack.dcSurface, 1763 + nTotalBgX, 160, 101, 84, 1, 7, &g_sfBG_Object);
 	__PutSprite(g_sfBack.dcSurface, 1728 + nTotalBgX, 224, 169, 101, 1, 92, &g_sfBG_Object);
 
 	__PutSprite(g_sfBack.dcSurface, 1608 + nTotalBgX, 160, OBJECT_FLAG_X_LEN, OBJECT_FLAG_Y_LEN, flagMove, 58, &g_sfBG_Object);	// 120 137 154
 	__PutSprite(g_sfBack.dcSurface, GAME_OVER_LINE + nTotalBgX, 144, OBJECT_FLAG_X_LEN, OBJECT_FLAG_Y_LEN, 103, 58, &g_sfBG_Object);
 	for (int i = 0; i < 10; i++)
-	{	// ±ê¹ß ºÀ
+	{	// ê¹ƒë°œ ë´‰
 		__PutSprite(g_sfBack.dcSurface, GAME_OVER_LINE + nTotalBgX, 160 + (i * 16), OBJECT_FLAG_X_LEN, OBJECT_FLAG_Y_LEN, 103, 75, &g_sfBG_Object);
 	}
 }
@@ -682,7 +663,7 @@ void ScoreInputUI(HWND hWnd)
 	SetTextColor(g_sfBack.dcSurface, RGB(0, 0, 0));
 	RECT rt = { 290, 260, 350, 310 };
 	Rectangle(g_sfBack.dcSurface, 290, 250, 350, 290);
-	DrawText(g_sfBack.dcSurface, "È®ÀÎ", -1, &rt, DT_CENTER);
+	DrawText(g_sfBack.dcSurface, "í™•ì¸", -1, &rt, DT_CENTER);
 
 	__CompleteBlt(hdc, &g_sfBack);
 	ReleaseDC(hWnd, hdc);
@@ -715,15 +696,15 @@ void ScoreList(HWND hWnd)
 
 	for (int i = 0; i < 10; i++)
 	{
-		// µî¼ö
+		// ë“±ìˆ˜
 		wsprintf(chRank, "%d", i + 1);
 		TextOut(g_sfBack.dcSurface, 170, 130 + (i * 20), chRank, strlen(chRank));
 
-		// Á¡¼ö
+		// ì ìˆ˜
 		wsprintf(chScore[i], "%d", nScoreList[i]);
 		TextOut(g_sfBack.dcSurface, 380, 130 + (i * 20), chScore[i], strlen(chScore[i]));
 
-		// ÀÌ¸§
+		// ì´ë¦„
 		TextOut(g_sfBack.dcSurface, 200, 130 + (i * 20), chName[i], strlen(chName[i]));
 	}
 
