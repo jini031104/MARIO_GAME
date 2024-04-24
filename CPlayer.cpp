@@ -1,4 +1,4 @@
-// ÀÌ°ÍÀº ¸¶¸®¿ÀÀÇ ½ºÅ©¸³Æ®´Ù.
+// ì´ê²ƒì€ ë§ˆë¦¬ì˜¤ì˜ ìŠ¤í¬ë¦½íŠ¸ë‹¤.
 #include "CPlayer.h"
 
 CPlayer::CPlayer()
@@ -23,17 +23,17 @@ void CPlayer::__StandState(WPARAM wParam)
 	//UnderStand = FALSE;
 	switch (wParam)
 	{
-	case MOVE_LEFT:	// ¿ŞÂÊ
+	case MOVE_LEFT:	// ì™¼ìª½
 	case MOVE_LEFT_A:
 		nStand[0] = 911;
 		nStand[1] = 132;
 		break;
-	case MOVE_RIGHT:	// ¿À¸¥ÂÊ
+	case MOVE_RIGHT:	// ì˜¤ë¥¸ìª½
 	case MOVE_RIGHT_D:
 		nStand[0] = 36;
 		nStand[1] = 132;
 		break;
-	case MOVE_DOWN:	// ¾Æ·¡
+	case MOVE_DOWN:	// ì•„ë˜
 	case MOVE_DOWN_S:
 		if (!UnderStand)
 		{
@@ -60,7 +60,7 @@ void CPlayer::__CharacterMove(WPARAM wParam, BOOL KeyBuffer[256], int nBgX, int 
 	if (KeyBuffer[MOVE_JUMP] && wParam == ID_TM_JUMPTIME)
 		spaceDownTime++;
 
-	// ¿òÁ÷ÀÌ´Â ¾Ö´Ï¸ŞÀÌ¼Ç
+	// ì›€ì§ì´ëŠ” ì• ë‹ˆë©”ì´ì…˜
 	if (wParam == ID_TM_ANIMATION)
 	{
 		if (KeyBuffer[MOVE_LEFT] || KeyBuffer[MOVE_LEFT_A])
@@ -76,9 +76,9 @@ void CPlayer::__CharacterMove(WPARAM wParam, BOOL KeyBuffer[256], int nBgX, int 
 				nStand[0] = 36;
 		}
 	}
-	// ½ÇÁ¦ ¿òÁ÷ÀÓ
+	// ì‹¤ì œ ì›€ì§ì„
 	if (wParam == ID_TM_MOVE)
-	{	// Á¡ÇÁ
+	{	// ì í”„
 		if ((KeyBuffer[MOVE_JUMP] == FALSE || (KeyBuffer[MOVE_JUMP] == TRUE && Downing == TRUE)) && !GameClear)
 		{
 			//char numString[20] = { 0 };
@@ -87,62 +87,41 @@ void CPlayer::__CharacterMove(WPARAM wParam, BOOL KeyBuffer[256], int nBgX, int 
 			if (nDy == LONG_JUMP || nDy == SHORT_JUMP)
 			{
 				Downing = TRUE;
+				jump1 = (nDy * jumpTime) - (0.5f * GRAVITY * (jumpTime * jumpTime));
+				jump2 = (nDy * (jumpTime + 0.4f)) - (0.5f * GRAVITY * ((jumpTime + 0.4f) * (jumpTime + 0.4f)));
+				jumpHeight = jump2 - jump1;
 
 				if ((nX1 < nCharacterMoveXY[0] + PLAYER_X_LEN && nCharacterMoveXY[0] < nX2)
 					&& nY <= nCharacterMoveXY[1] + PLAYER_Y_LEN && nCharacterMoveXY[1] <= nY)
 				{
-					jump1 = (nDy * jumpTime) - (0.5f * GRAVITY * (jumpTime * jumpTime));
-					jump2 = (nDy * (jumpTime + 0.4f)) - (0.5f * GRAVITY * ((jumpTime + 0.4f) * (jumpTime + 0.4f)));
-					jumpHeight = jump2 - jump1;
-
-					if (jumpHeight >= 0)
+					if (CrossBorder)
 					{
-						nCharacterMoveXY[1] -= jumpHeight;
-						jumpTime += 0.2f;
+						// ìºë¦­í„°ì˜ Yì¶•ì´ ì „ë¶€ í—ˆê³µ ì§€í˜•ì˜ ê²½ê³„ì„ ì„ ë„˜ì„ ê²½ìš°ì—ë§Œ
+						// ì¦‰, í—ˆê³µ ì§€í˜•ì— ì˜¨ì „íˆ ì°©ì§€í–ˆì„ ë•ŒëŠ” ë–¨ì–´ì§€ëŠ” ê²ƒì„ ë©ˆì¶˜ë‹¤
+						nCharacterMoveXY[1] = nY - PLAYER_Y_LEN + 2;
+						Downing = FALSE;
 					}
 					else
 					{
-						if (CrossBorder)
-						{
-							nCharacterMoveXY[1] = nY - PLAYER_Y_LEN + 2;
-							Downing = FALSE;
-						}
-						else
-						{
-							nCharacterMoveXY[1] -= jumpHeight;
-							jumpTime += 0.2f;
-						}
+						// í—ˆê³µ ì§€í˜•ì„ ì œëŒ€ë¡œ ë„˜ì§€ ëª»í–ˆë‹¤ë©´
+						// ì¦‰, ì œëŒ€ë¡œ ì°©ì§€í•˜ì§€ ëª»í–ˆë‹¤ë©´ ê³„ì† ë–¨ì–´ì§„ë‹¤
+						nCharacterMoveXY[1] -= jumpHeight;
+						jumpTime += 0.2f;
 					}
 				}
 				else
 				{
 					if (nCharacterMoveXY[1] <= nY && nCharacterMoveXY[1] + PLAYER_Y_LEN <= nY)
-					{	// yÃàÀÌ ÀüºÎ °æ°è¼±À» ³Ñ¾úÀ» °æ¿ì¿¡¸¸
+					{	// nYëŠ” í—ˆê³µ ì§€í˜•ì˜ Yì¶• ìœ„ì¹˜
+						// ìºë¦­í„°ì˜ yì¶•ì´ ì „ë¶€ ê²½ê³„ì„ ì„ ë„˜ì—ˆì„ ê²½ìš°ì—ë§Œ
 						CrossBorder = TRUE;
 					}
-					jump1 = (nDy * jumpTime) - (0.5f * GRAVITY * (jumpTime * jumpTime));
-					jump2 = (nDy * (jumpTime + 0.4f)) - (0.5f * GRAVITY * ((jumpTime + 0.4f) * (jumpTime + 0.4f)));
-					jumpHeight = jump2 - jump1;
-
-					char numString[10] = { 0 };
-					itoa(jump1, numString, 10);
-					OutputDebugString("jump1: ");
-					OutputDebugString(numString);
-
-					itoa(jump2, numString, 10);
-					OutputDebugString("		jump2: ");
-					OutputDebugString(numString);
-
-					itoa(jumpHeight, numString, 10);
-					OutputDebugString("		jumpHeight: ");
-					OutputDebugString(numString);
-					OutputDebugString("\n");
 
 					nCharacterMoveXY[1] -= jumpHeight;
 					jumpTime += 0.2f;
 				}
 
-				if (273 < nCharacterMoveXY[1])
+				if (PLAYER_Y < nCharacterMoveXY[1])
 				{
 					nDy = 0.0f;
 					nCharacterMoveXY[1] = PLAYER_Y;
@@ -154,7 +133,7 @@ void CPlayer::__CharacterMove(WPARAM wParam, BOOL KeyBuffer[256], int nBgX, int 
 		{
 			CrossBorder = FALSE;
 			jumpTime = 0.0f;
-			if (spaceDownTime < 3)			// 0.2 ¹Ì¸¸ÀÏ °æ¿ì ÂªÀº Á¡ÇÁ
+			if (spaceDownTime < 3)			// 0.2 ë¯¸ë§Œì¼ ê²½ìš° ì§§ì€ ì í”„
 			{
 				nDy = SHORT_JUMP;
 			}
@@ -164,15 +143,15 @@ void CPlayer::__CharacterMove(WPARAM wParam, BOOL KeyBuffer[256], int nBgX, int 
 			}
 		}
 
-		if (UnderStand == TRUE && KeyBuffer[MOVE_DOWN] == FALSE && KeyBuffer[MOVE_DOWN_S] == FALSE)	// ¾Æ·¡
-		{	// ¾É¾Ò´Ù°¡ ´Ù½Ã ÀÏ¾î³ª´Â »óÈ²
+		if (UnderStand == TRUE && KeyBuffer[MOVE_DOWN] == FALSE && KeyBuffer[MOVE_DOWN_S] == FALSE)	// ì•„ë˜
+		{	// ì•‰ì•˜ë‹¤ê°€ ë‹¤ì‹œ ì¼ì–´ë‚˜ëŠ” ìƒí™©
 			nStand[0] = BeforStandX;
 			nStand[1] = BeforStandY;
 			UnderStand = FALSE;
 		}
-		if (KeyBuffer[MOVE_LEFT] || KeyBuffer[MOVE_LEFT_A])		// ¿ŞÂÊ
+		if (KeyBuffer[MOVE_LEFT] || KeyBuffer[MOVE_LEFT_A])		// ì™¼ìª½
 		{
-			if (100 <= MoveTime )//&& nSpeed <= 10)	// 5ÃÊ ÀÌ»ó ÀÌµ¿½Ã ¼Óµµ Áõ°¡
+			if (100 <= MoveTime )//&& nSpeed <= 10)	// 5ì´ˆ ì´ìƒ ì´ë™ì‹œ ì†ë„ ì¦ê°€
 			{
 				//nSpeed += 5;
 				characterFast = TRUE;
@@ -181,18 +160,18 @@ void CPlayer::__CharacterMove(WPARAM wParam, BOOL KeyBuffer[256], int nBgX, int 
 				MoveTime++;
 
 			if (nMapCount > 1 || (nMapCount == 1 && nBgX < 0))
-			{	// ¸ÊÀÌ ÇÑ¹ø º¯°æµÇ¾ú°Å³ª, ÃÖÃÊÀÇ ¸ÊÀÌ ¾à°£ ¹Ğ·ÈÀ» ¶§, Ä³¸¯ÅÍ´Â nLefttLimit ÀÌ»ó ³ª¾Æ°¥ ¼ö ¾ø´Ù.
+			{	// ë§µì´ í•œë²ˆ ë³€ê²½ë˜ì—ˆê±°ë‚˜, ìµœì´ˆì˜ ë§µì´ ì•½ê°„ ë°€ë ¸ì„ ë•Œ, ìºë¦­í„°ëŠ” nLefttLimit ì´ìƒ ë‚˜ì•„ê°ˆ ìˆ˜ ì—†ë‹¤.
 				if (LEFT_LIMIT <= nCharacterMoveXY[0])
 					nCharacterMoveXY[0] -= speed;
 			}
 			else if (0 <= nCharacterMoveXY[0] && nMapCount == 1 && nBgX == 0)
-			{	// ÃÖÃÊÀÇ ¸ÊÀÌ°í ¿òÁ÷ÀÓÀÌ ¾ø¾ú´Ù¸é ¿ŞÂÊ È­¸é±îÁö¹Û¿¡ ¸ø ¿òÁ÷ÀÎ´Ù.
+			{	// ìµœì´ˆì˜ ë§µì´ê³  ì›€ì§ì„ì´ ì—†ì—ˆë‹¤ë©´ ì™¼ìª½ í™”ë©´ê¹Œì§€ë°–ì— ëª» ì›€ì§ì¸ë‹¤.
 				nCharacterMoveXY[0] -= speed;
 			}
 		}
-		if (KeyBuffer[MOVE_RIGHT] || KeyBuffer[MOVE_RIGHT_D])		// ¿À¸¥ÂÊ
+		if (KeyBuffer[MOVE_RIGHT] || KeyBuffer[MOVE_RIGHT_D])		// ì˜¤ë¥¸ìª½
 		{
-			if (100 <= MoveTime )//&& nSpeed <= 10)	// 5ÃÊ ÀÌ»ó ÀÌµ¿½Ã ¼Óµµ Áõ°¡
+			if (100 <= MoveTime )//&& nSpeed <= 10)	// 5ì´ˆ ì´ìƒ ì´ë™ì‹œ ì†ë„ ì¦ê°€
 			{
 				//nSpeed += 5;
 				characterFast = TRUE;
@@ -201,7 +180,7 @@ void CPlayer::__CharacterMove(WPARAM wParam, BOOL KeyBuffer[256], int nBgX, int 
 				MoveTime++;
 
 			if (nMapCount != MAPLIMIT || (nMapCount == MAPLIMIT && 0 < nBgX))
-			{	// ¸¶Áö¸· ¸ÊÀÎµ¥ Á¶±İ ¹Ğ·ÈÀ» °æ¿ì, Ä³¸¯ÅÍ´Â nRightLimit ÀÌ»ó ³ª¾Æ°¥ ¼ö ¾ø´Ù.
+			{	// ë§ˆì§€ë§‰ ë§µì¸ë° ì¡°ê¸ˆ ë°€ë ¸ì„ ê²½ìš°, ìºë¦­í„°ëŠ” nRightLimit ì´ìƒ ë‚˜ì•„ê°ˆ ìˆ˜ ì—†ë‹¤.
 				if (nCharacterMoveXY[0] <= RIGHT_LIMIT)
 					nCharacterMoveXY[0] += speed;
 			}
@@ -212,7 +191,7 @@ void CPlayer::__CharacterMove(WPARAM wParam, BOOL KeyBuffer[256], int nBgX, int 
 		}
 
 		if (!KeyBuffer[MOVE_LEFT] && !KeyBuffer[MOVE_LEFT_A] && !KeyBuffer[MOVE_RIGHT] && !KeyBuffer[MOVE_RIGHT_D])
-		{	// ¿òÁ÷ÀÓÀ» ¸ØÃèÀ» ¶© ½ºÇÇµå¸¦ ¿ø»óÅÂ·Î µ¹¸²
+		{	// ì›€ì§ì„ì„ ë©ˆì·„ì„ ë• ìŠ¤í”¼ë“œë¥¼ ì›ìƒíƒœë¡œ ëŒë¦¼
 			MoveTime = 0; //nSpeed = 10;
 			characterFast = FALSE;
 		}
